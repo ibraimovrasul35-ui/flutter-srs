@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Открыть эмулятор",
+      "type": "shell",
+      "command": "flutter emulators --launch ${input:emulator}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Установить приложение на эмулятор",
+      "type": "shell",
+      "command": "flutter build apk --debug; if ($?) { flutter install --debug }",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "emulator",
+      "type": "pickString",
+      "description": "Какой эмулятор открыть",
+      "options": [
+        { "label": "Pixel 9 Pro XL", "value": "Pixel_9_Pro_XL" },
+        { "label": "Medium Phone API 36.1", "value": "Medium_Phone_API_36.1" }
+      ],
+      "default": "Pixel_9_Pro_XL"
+    }
+  ]
+}
