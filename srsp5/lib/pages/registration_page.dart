@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +42,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   bool _hidePass = true;
   bool _hideConfirmPass = true;
+  bool _loading = false;
 
   @override
   void dispose() {
@@ -130,6 +133,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
       story: _storyController.text.trim(),
     );
 
+    setState(() => _loading = true);
+    try {
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: user.email,
+            password: _passController.text,
+          );
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credential.user!.uid)
+          .set({...user.toMap(), 'createdAt': FieldValue.serverTimestamp()});
+    } on FirebaseAuthException catch (e) {
+      _showMessage(_authErrorMessage(e));
+      return;
+    } catch (e) {
+      _showMessage('Failed to save data: $e');
+      return;
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('name', user.name);
     await prefs.setString('phone', user.phone);
@@ -144,7 +168,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
+  String _authErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return 'This email is already registered';
+      case 'invalid-email':
+        return 'Invalid email address';
+      case 'weak-password':
+        return 'Password is too weak';
+      case 'network-request-failed':
+        return 'No internet connection';
+      default:
+        return e.message ?? 'Registration failed';
+    }
+  }
+
   void _showMessage(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.red,
@@ -295,7 +335,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               obscureText: _hideConfirmPass,
               maxLength: 16,
               textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _submitForm(),
+              onFieldSubmitted: (_) => _loading ? null : _submitForm(),
               validator: _validateConfirmPassword,
               decoration: InputDecoration(
                 labelText: 'Confirm Password *',
@@ -313,13 +353,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
             const SizedBox(height: 15),
             ElevatedButton(
-              onPressed: _submitForm,
+              onPressed: _loading ? null : _submitForm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
-              child: const Text('Submit Form', style: TextStyle(fontSize: 16)),
+              child: _loading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text('Submit Form', style: TextStyle(fontSize: 16)),
             ),
           ],
         ),

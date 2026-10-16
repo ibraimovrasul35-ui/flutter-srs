@@ -12,4 +12,12 @@ class User {
     required this.country,
     required this.story,
   });
+
+  Map<String, dynamic> toMap() => {
+        'name': name,
+        'phone': phone,
+        'email': email,
+        'country': country,
+        'story': story,
+      };
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "559956229005",
+    "project_id": "srsp5-46432",
+    "storage_bucket": "srsp5-46432.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559956229005:android:b6724e0e419863fbb1dbc4",
+        "android_client_info": {
+          "package_name": "com.example.srsp5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs0so87edePkzna5FEv3ikE-b-5mF0h7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
