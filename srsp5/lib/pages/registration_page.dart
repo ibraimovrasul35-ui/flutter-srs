@@ -79,11 +79,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   String? _validatePhone(String? value) {
-    final phoneExp = RegExp(r'^\(\d{3}\)\d{3}-\d{4}$');
+    final phoneExp = RegExp(r'^8\d{10}$');
     if (value == null || value.isEmpty) {
       return 'Phone number is required';
     } else if (!phoneExp.hasMatch(value)) {
-      return 'Phone format: (XXX)XXX-XXXX';
+      return 'Phone format: 8XXXXXXXXXX';
     }
     return null;
   }
@@ -244,13 +244,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) => _fieldFocusChange(_phoneFocus, _emailFocus),
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d()\-]')),
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(11),
               ],
               validator: _validatePhone,
               decoration: InputDecoration(
                 labelText: 'Phone Number *',
                 hintText: 'Where can we reach you?',
-                helperText: 'Phone format: (XXX)XXX-XXXX',
+                helperText: 'Phone format: 8XXXXXXXXXX',
                 prefixIcon: const Icon(Icons.call),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
