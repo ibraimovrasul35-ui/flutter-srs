@@ -11,6 +11,7 @@
 | `Srs6Flutter` | СРС 6: flutter_bloc, HTTP, JSON (список постов) |
 | `srs8_post_explorer` | СРС 8: Post Explorer — Dio, Retrofit, json_serializable, кэш, пагинация, тесты |
 | `srs9_Flutter` | СРС 9: Мини-магазин — Launcher Icon (flutter_launcher_icons, Adaptive Icon), Unit и Widget тесты |
+| `srs11_clean_architecture` | СРС 11: Post Explorer (СРС 8) на Clean Architecture — Domain/Data/Presentation, GetIt, Either/Failure, избранное |
 
 Запуск любого проекта:
 
